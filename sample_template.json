@@ -1,0 +1,10 @@
+{
+    "Sample name": "",
+    "Substrate": [],
+    "Geometry": ["reflection", "transmission"],
+    "Puck": ["transmission", "reflection", "holo"],
+    "Detectors": ["MTE3", "Andor"],
+    "Energy (eV)": [],
+    "Temperature (K)": [],
+    "Magnetic Field": []
+}

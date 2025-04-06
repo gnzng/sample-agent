@@ -1,0 +1,51 @@
+{
+    "7RZ": {
+        "Sample name": "SmCo5 thin film",
+        "Substrate": [
+            "Al2O3"
+        ],
+        "Geometry": [
+            "reflection"
+        ],
+        "Puck": [
+            "reflection"
+        ],
+        "Detectors": [
+            "MTE3"
+        ],
+        "Energy (eV)": [
+            1000,
+            1200
+        ],
+        "Temperature (K)": [
+            300
+        ],
+        "Magnetic Field": true,
+        "user_sample_input": "I have a SmCo5 thin film grown by PLD on Al2O3. I want to measure at 15 degree two theta on the MTE camera at from 1000 and 1200 eV at room temperature with 0.05 Tesla applied."
+    },
+    "5T3": {
+        "Sample name": "FeGe thin film",
+        "Substrate": [
+            "MgO"
+        ],
+        "Geometry": [
+            "transmission"
+        ],
+        "Puck": [
+            "transmission"
+        ],
+        "Detectors": [
+            "Andor"
+        ],
+        "Energy (eV)": [
+            700,
+            800
+        ],
+        "Temperature (K)": [
+            300,
+            400
+        ],
+        "Magnetic Field": true,
+        "user_sample_input": "I would like to add a FeGe thin film grown on MgO measured in transmission on the Andor camera at from 700 to 800eV at 300 and 400 Kelvin with 0.05 Tesla applied. "
+    }
+}

@@ -1,0 +1,1 @@
+I have a SmCo5 thin film grown by PLD on Al2O3. I want to measure at 15 degree two theta on the MTE camera at from 1000 and 1200 eV at room temperature with 0.05 Tesla applied.
