@@ -1,0 +1,25 @@
+# macOS system files
+.DS_Store
+
+
+# Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+*.env
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python egg files
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Logs and local database files
+*.log
+*.sqlite3
