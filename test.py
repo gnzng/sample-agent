@@ -2,7 +2,7 @@ from main import Request, Settings, TimeAgent
 
 
 def test_templater_response():
-    with open("sample.txt", "r") as file:
+    with open("text_examples/sample.txt", "r") as file:
         sample_input = file.read()
 
     request = Request.create(sample_input=sample_input)

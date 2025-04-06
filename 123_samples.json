@@ -47,5 +47,51 @@
         ],
         "Magnetic Field": true,
         "user_sample_input": "I would like to add a FeGe thin film grown on MgO measured in transmission on the Andor camera at from 700 to 800eV at 300 and 400 Kelvin with 0.05 Tesla applied. "
+    },
+    "3jf": {
+        "Sample name": "10nm Permalloy on SiN membrane",
+        "Substrate": [
+            "SiN"
+        ],
+        "Geometry": [
+            "transmission"
+        ],
+        "Puck": [
+            "transmission"
+        ],
+        "Detectors": [
+            "Andor"
+        ],
+        "Energy (eV)": [
+            710
+        ],
+        "Temperature (K)": [
+            300
+        ],
+        "Magnetic Field": false,
+        "user_sample_input": "10nm Permalloy on SiN membrane, transmission on andor. room temp. no magnetic field. 710eV."
+    },
+    "3Mu": {
+        "Sample name": "Fe",
+        "Substrate": [
+            "sapphire"
+        ],
+        "Geometry": [
+            "reflection"
+        ],
+        "Puck": [
+            "reflection"
+        ],
+        "Detectors": [
+            "MTE3"
+        ],
+        "Energy (eV)": [
+            800
+        ],
+        "Temperature (K)": [
+            300
+        ],
+        "Magnetic Field": false,
+        "user_sample_input": "I have a Fe sample grown on sapphire which I want to measure in reflection at 800eV and room temperature on the MTE camera"
     }
 }

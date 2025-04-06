@@ -83,7 +83,9 @@ class Request(BaseModel):
             - if the puck is not specified, use the geometry as a puck entry
             - if an angle is mentioned it is probably a reflection geometry experiment
             - if room temperature is mentioned, set the temperature to 300K
-
+            - if the sample name is not specified, use the substrate as a sample name
+            - if no magnetic field is specified, set the field to false
+            - the substrate can also be a membrane
             """
         )
         return cls(prompt=prompt)
@@ -126,7 +128,6 @@ class TimeAgent(Agent):
 if __name__ == "__main__":
     # walk throught the sample adding process:
     proposal_id = input("What is the your proposal id? ")
-    print(f"Starting the sample adding process for: {proposal_id}...")
 
     # Verify the proposal ID input
     print(f"You entered proposal ID: {proposal_id}. Is this correct? (y/yes to confirm)")
@@ -134,6 +135,7 @@ if __name__ == "__main__":
     if confirmation not in ["y", "yes"]:
         print("Error: Proposal ID confirmation failed. Exiting.")
         exit(1)
+    print(f"Starting the sample adding process for: {proposal_id}...")
     # Create an empty JSON file with the proposal_id as part of the filename
     filename = f"{proposal_id}_samples.json"
     if Path(filename).exists():
@@ -156,8 +158,8 @@ if __name__ == "__main__":
             sample_id = get_random_sample_hash()
             print(f"Adding sample with ID: {sample_id}")
             sample_input = input("Please enter the sample details in free text with the following details:\n"
-                                 "- Sample name\n"
-                                 "- substrate \n"
+                                 "- sample name\n"
+                                 "- substrate or membrane \n"
                                  "- desired measured geometries (transmission / reflection)\n"
                                  "- which puck to use (reflection / transmission / holo) \n"
                                  "- desired measurement energy in eV \n"
@@ -179,6 +181,9 @@ if __name__ == "__main__":
             print(json.dumps(json.loads(response), indent=4))
             # Add the sample ID to the response
             response = json.loads(response)
+
+            # TODO implement a check if the response has valid fields.
+
             response["user_sample_input"] = sample_input
             new_sample_item = {sample_id: response}
             # Load the existing data from the file
