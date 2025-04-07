@@ -98,7 +98,6 @@ class Request(BaseModel):
             - if the detectors are not specified, set it to an empty list
             - if the energy is not specified, set it to an empty list
             - if the temperature is not specified, set it to an empty list
-            - if it is on a membrane it is a transmission geometry measurement
 
             Use the following user input to fill out the template. The user input is: {sample_input}.
             """
