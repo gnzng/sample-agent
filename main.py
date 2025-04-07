@@ -162,8 +162,29 @@ def get_proposal_id() -> str:
     while True:
         proposal_id = input("Please enter your proposal ID: ").strip()
         if confirm_action(f"You entered proposal ID: {proposal_id}. Is this correct?"):
-            return proposal_id
-        print("Proposal ID confirmation failed. Please try again.\n")
+            if validate_token(proposal_id):
+                return proposal_id
+            else:
+                print("Invalid token for the given proposal ID. Please try again.\n")
+        else:
+            print("Proposal ID confirmation failed. Please try again.\n")
+
+
+def validate_token(proposal_id: str) -> bool:
+    """Validate the token for the given proposal ID."""
+    token = input(f"Please enter the token for proposal ID {proposal_id}: ").strip()
+    try:
+        with open("token_list.json", "r") as file:
+            token_data = json.load(file)
+        if token_data.get(proposal_id) == token:
+            print("Token validated successfully.")
+            return True
+        else:
+            print("Invalid token.")
+            return False
+    except (FileNotFoundError, json.JSONDecodeError):
+        print("Error: token_list.json file not found or invalid format.")
+        return False
 
 
 def initialize_sample_file(proposal_id: str) -> str:
