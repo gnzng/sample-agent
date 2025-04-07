@@ -11,14 +11,28 @@
         const term = new Terminal();
         term.open(document.getElementById('terminal'));
 
-        // Connect to WebSocket
         const ws = new WebSocket('ws://localhost:8000/ws');
-        
-        // Handle incoming data from server
+        let inputBuffer = '';
+
+        // Handle incoming output from the server
         ws.onmessage = (event) => term.write(event.data);
-        
-        // Send user input to server
-        term.onData((data) => ws.send(data));
+
+        // Handle user input (wait for Enter)
+        term.onData((data) => {
+            if (data === '\r') {  // Enter key pressed
+                ws.send(inputBuffer + '\n');  // Send buffered input + newline
+                inputBuffer = '';  // Reset buffer
+                term.write('\r\n');  // Move to new line
+            } else if (data === '\x7f') {  // Backspace key
+                if (inputBuffer.length > 0) {
+                    inputBuffer = inputBuffer.slice(0, -1);  // Remove last character
+                    term.write('\b \b');  // Erase from terminal
+                }
+            } else {
+                inputBuffer += data;  // Add to buffer
+                term.write(data);  // Echo character to terminal
+            }
+        });
     </script>
 </body>
 </html>

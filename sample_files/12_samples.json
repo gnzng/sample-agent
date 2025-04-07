@@ -1,0 +1,17 @@
+{
+    "2nK": {
+        "Sample name": "fege",
+        "Substrate": "silicon membrane",
+        "Geometry": "transmission",
+        "Puck": "",
+        "Detectors": [
+            "MTE3"
+        ],
+        "Energy (eV)": [],
+        "Temperature (K)": [
+            300.0
+        ],
+        "Magnetic Field": false,
+        "user_sample_input": "fege on a silicon membrane at rt with mte3"
+    }
+}

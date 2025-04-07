@@ -1,7 +1,6 @@
 from fastapi import FastAPI, WebSocket
 from fastapi.staticfiles import StaticFiles
 import asyncio
-import subprocess
 
 app = FastAPI()
 
@@ -31,7 +30,7 @@ async def websocket_terminal(websocket: WebSocket):
     async def read_input():
         while True:
             user_input = await websocket.receive_text()
-            process.stdin.write(user_input.encode() + b"\n")
+            process.stdin.write(user_input.encode())
             await process.stdin.drain()
 
     await asyncio.gather(read_output(), read_input())
