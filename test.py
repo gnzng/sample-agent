@@ -32,7 +32,7 @@ def test_templater_response(sample_input):
     # Run the agent with the request
     response = agent.run(request)
 
-    print(f"Response from agent: {response}")
+    print(f"Response from agent for {sample_input}: \n{response}")
     assert isinstance(response, str), "Response should be a string"
     assert len(response) > 0, "Response should not be empty"
 
