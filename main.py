@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 import json
 import os
+from typing import Dict, Any
 from prettytable import PrettyTable
 
 load_dotenv()
@@ -136,84 +137,129 @@ class LLMAgent(Agent):
         return response.choices[0].message.content
 
 
-def main():
-    # walk throught the sample adding process:
-    proposal_id = input("What is the your proposal id? ")
+def confirm_action(prompt: str, default: bool = False) -> bool:
+    """Get user confirmation with yes/no input."""
+    valid_yes = ["y", "yes"]
+    valid_no = ["n", "no"]
+    suffix = " [Y/n]: " if default else " [y/N]: "
 
-    # Verify the proposal ID input
-    print(f"You entered proposal ID: {proposal_id}. Is this correct? ([y]es to confirm)")
-    confirmation = input().strip().lower()
-    if confirmation not in ["y", "yes"]:
-        print("Error: Proposal ID confirmation failed. Exiting. Start process again, with a valid proposal ID.")
-        exit(1)
-    print(f"Starting the sample adding process for: {proposal_id}...")
-    # Create an empty JSON file with the proposal_id as part of the filename
+    while True:
+        response = input(prompt + suffix).strip().lower()
+        if not response:
+            return default
+        if response in valid_yes:
+            return True
+        if response in valid_no:
+            return False
+        print("Invalid input. Please enter 'y' or 'n'.")
+
+
+def get_proposal_id() -> str:
+    """Get and confirm proposal ID from user."""
+    while True:
+        proposal_id = input("Please enter your proposal ID: ").strip()
+        if confirm_action(f"You entered proposal ID: {proposal_id}. Is this correct?"):
+            return proposal_id
+        print("Proposal ID confirmation failed. Please try again.\n")
+
+
+def initialize_sample_file(proposal_id: str) -> str:
+    """Initialize or validate the sample JSON file."""
     filename = f"{proposal_id}_samples.json"
-    if Path(filename).exists():
-        print(f"File {filename} already exists. Samples will be added to the existing file.")
+    file_path = Path(filename)
+
+    if not file_path.exists():
+        with open(file_path, "w") as f:
+            json.dump({}, f)
+        print(f"Created new sample file: {filename}")
     else:
-        with open(filename, "w") as file:
-            json.dump({}, file)
-        print(f"Created sample setup file: {filename}")
+        print(f"Using existing sample file: {filename}")
+
+    return filename
+
+
+def process_sample_input(sample_input: str) -> Dict[str, Any]:
+    """Process user input through LLM agent and return response."""
+    settings = Settings()
+    agent = LLMAgent(settings)
+    agent.setup()
+
+    request = Request.create(sample_input=sample_input)
+    response = agent.run(request)
+
+    # Add validation logic here if needed
+    return json.loads(response)
+
+
+def add_sample(filename: str) -> None:
+    """Handle the sample addition process for a single sample."""
+    sample_id = get_random_sample_hash()
+    print(f"\nAdding sample with ID: {sample_id}")
+
+    sample_input = input(
+        "Please enter sample details with the following information:\n"
+        "- Sample name\n"
+        "- Substrate/membrane\n"
+        "- Desired geometries (transmission/reflection)\n"
+        "- Puck type (reflection/transmission/holo)\n"
+        "- Measurement energy (eV)\n"
+        "- Camera/detector (MTE3/Andor)\n"
+        "- Measurement temperature (K)\n"
+        "- Magnetic field requirement\n"
+        "Enter all details separated by commas: "
+    ).strip()
+
+    if not sample_input:
+        print("Error: No sample details entered. Sample not added.")
+        return
+
+    try:
+        processed_data = process_sample_input(sample_input)
+        processed_data["user_sample_input"] = sample_input
+    except Exception as e:
+        print(f"Error processing sample input: {e}")
+        return
+
+    # Load existing data
+    try:
+        with open(filename, "r") as f:
+            existing_data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        existing_data = {}
+
+    # Add new sample
+    existing_data[sample_id] = processed_data
+
+    # Save updated data
+    with open(filename, "w") as f:
+        json.dump(existing_data, f, indent=4)
+
+    print(f"Successfully added sample {sample_id} to {filename}")
+
+
+def main():
+    """Main workflow for sample management."""
+    print("================================")
+    print("=== Sample Management System ===")
+    print(("========= for BL7011 =========="))
+    print("================================")
+
+    proposal_id = get_proposal_id()
+    filename = initialize_sample_file(proposal_id)
 
     try:
         show_samples(filename)
     except Exception:
-        print("No existing samples found. Starting with an empty file.")
+        print("")
+        print("Starting with fresh sample file.")
 
-    adding_samples = True
-    while adding_samples:
-        print("Do you want to add a sample? ([y]es to add, [n]o to finish)")
-        confirmation = input().strip().lower()
-        if confirmation in ["y", "yes"]:
-            sample_id = get_random_sample_hash()
-            print(f"Adding sample with ID: {sample_id}")
-            sample_input = input("Please enter the sample details in free text with the following details:\n"
-                                 "- sample name\n"
-                                 "- substrate or membrane \n"
-                                 "- desired measured geometries (transmission / reflection)\n"
-                                 "- which puck to use (reflection / transmission / holo) \n"
-                                 "- desired measurement energy in eV \n"
-                                 "- which camera / detector to use (MTE3 / Andor) \n"
-                                 "- desired measurement temperature in Kelvin \n"
-                                 "- if a magnetic field should be applied \n"
-                                 )
-            # Create a request object with the sample input
-            request = Request.create(sample_input=sample_input)
-            # Create a request object with the sample input
-            request = Request(prompt=request.prompt)
-            # Initialize settings and agent
-            settings = Settings()
-            agent = LLMAgent(settings)
-            agent.setup()
-            # Run the agent with the request
-            response = agent.run(request)
-            print("Response from agent:")
-            print(json.dumps(json.loads(response), indent=4))
-            # Add the sample ID to the response
-            response = json.loads(response)
+    while confirm_action("\nWould you like to add a new sample?", default=True):
+        add_sample(filename)
 
-            # TODO implement a check if the response has valid fields.
-
-            response["user_sample_input"] = sample_input
-            new_sample_item = {sample_id: response}
-            # Load the existing data from the file
-            with open(filename, "r") as file:
-                existing_data = json.load(file)
-            # Update the data with the new sample item
-            existing_data.update(new_sample_item)
-            # Save the updated data back to the file
-            with open(filename, "w") as file:
-                json.dump(existing_data, file, indent=4)
-            print(f"Sample with ID {sample_id} added to {filename}.")
-
-        elif confirmation in ["n", "no"]:
-            adding_samples = False
-        else:
-            print("Invalid input. Please enter 'y' or 'n'.")
-
-    print(f"Sample adding process completed for proposal ID {proposal_id}, file saved as {filename}.")
+    print("")
+    print("\nFinal sample summary:")
     show_samples(filename)
+    print(f"\nProcess completed for proposal {proposal_id}. File saved as {filename}")
 
 
 if __name__ == "__main__":
