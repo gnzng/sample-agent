@@ -160,10 +160,38 @@ def confirm_action(prompt: str, default: bool = False) -> bool:
 def get_proposal_id() -> str:
     """Get and confirm proposal ID from user."""
     while True:
-        proposal_id = input("Please enter your proposal ID: ").strip()
+        proposal_id = input("Please enter your proposal ID (or type 'exit' to quit): ").strip()
+        if proposal_id.lower() == "exit":
+            print("Exiting the program.")
+            exit(0)
         if confirm_action(f"You entered proposal ID: {proposal_id}. Is this correct?"):
-            return proposal_id
-        print("Proposal ID confirmation failed. Please try again.\n")
+            if validate_token(proposal_id):
+                return proposal_id
+            else:
+                print("Invalid token for the given proposal ID. Please try again.\n")
+        else:
+            print("Proposal ID confirmation failed. Please try again.\n")
+
+
+def validate_token(proposal_id: str) -> bool:
+    """Validate the token for the given proposal ID."""
+    while True:
+        token = input(f"Please enter the token for proposal ID {proposal_id} (or type 'exit' to quit): ").strip()
+        if token.lower() == "exit":
+            print("Exiting the program.")
+            exit(0)
+        try:
+            with open("token_list.json", "r") as file:
+                token_data = json.load(file)
+            if token_data.get(proposal_id) == token:
+                print("Token validated successfully.")
+                return True
+            else:
+                print("Invalid token.")
+                return False
+        except (FileNotFoundError, json.JSONDecodeError):
+            print("Error: token_list.json file not found or invalid format.")
+            return False
 
 
 def initialize_sample_file(proposal_id: str) -> str:
@@ -242,10 +270,10 @@ def add_sample(filename: str) -> None:
 
 def main():
     """Main workflow for sample management."""
-    print("================================")
-    print("=== Sample Management System ===")
-    print(("========= for BL7011 =========="))
-    print("================================")
+    print("======================================")
+    print("=== Sample Management System Agent ===")
+    print(("========= for BLXXX ================="))
+    print("======================================")
 
     proposal_id = get_proposal_id()
     filename = initialize_sample_file(proposal_id)
