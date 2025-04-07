@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Terminal</title>
+    <link rel="stylesheet" href="https://unpkg.com/xterm@5.1.0/css/xterm.css">
+    <script src="https://unpkg.com/xterm@5.1.0/lib/xterm.js"></script>
+    <!-- Add FitAddon for dynamic resizing -->
+    <script src="https://unpkg.com/xterm-addon-fit@0.7.0/lib/xterm-addon-fit.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        #terminal {
+            width: 100%;
+            height: 100vh;
+            padding: 10px;
+            background: #1e1e1e;
+        }
+        /* Monospace font for consistent table alignment */
+        .xterm * {
+            font-family: 'Courier New', monospace !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal"></div>
+    <script>
+        const term = new Terminal({
+            convertEol: true,  // Critical for line breaks
+            fontFamily: 'Courier New, monospace',
+            fontSize: 14,
+            allowProposedApi: true,  // Enable addons
+        });
+
+        // FitAddon for dynamic terminal sizing
+        const fitAddon = new FitAddon.FitAddon();
+        term.loadAddon(fitAddon);
+
+        term.open(document.getElementById('terminal'));
+        fitAddon.fit();  // Initial fit
+
+        // Resize on window changes
+        window.addEventListener('resize', () => fitAddon.fit());
+
+        // WebSocket connection and input handling (same as before)
+        const ws = new WebSocket('ws://localhost:8000/ws');
+        let inputBuffer = '';
+
+        ws.onmessage = (event) => {
+            term.write(event.data.replace(/\n/g, '\r\n'));  // Force \r\n line endings
+        };
+
+        term.onData((data) => {
+            if (data === '\r') {  // Enter pressed
+                ws.send(inputBuffer + '\n');
+                inputBuffer = '';
+                term.write('\r\n');
+            } else if (data === '\x7f') {  // Backspace
+                if (inputBuffer.length > 0) {
+                    inputBuffer = inputBuffer.slice(0, -1);
+                    term.write('\b \b');
+                }
+            } else {
+                inputBuffer += data;
+                term.write(data);
+            }
+        });
+    </script>
+</body>
+</html>
