@@ -76,7 +76,7 @@ class Request(BaseModel):
         template = json.dumps(load_sample_template())
         prompt = (
             f"""
-            You are an agent working on a synchrotron scattering beam line, which mostly measures condensed matter samples. We gater information about a new measurement by user input. 
+            You are an agent working on a synchrotron scattering beam line, which mostly measures condensed matter samples. We gater information about a new measurement by user input.
             The template is:
             {template}.
             If you don't know the answer for a specific field, leave it an empty list and do not add any extra text. ONLY return the filled template in JSON format.
