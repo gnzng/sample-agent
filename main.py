@@ -43,7 +43,7 @@ def show_samples(filename):
     # just view the current sample setup file as a table
     with open(filename, "r") as file:
         data = json.load(file)
-        print(f"Current sample setup for id {proposal_id}:")
+        print(f"Current sample setup for {filename}:")
         # Create a PrettyTable object with headers
         headers = ["Sample ID"] + list(next(iter(data.values())).keys())
         headers.remove("user_sample_input")  # Exclude "user_sample_input" from headers
@@ -136,7 +136,7 @@ class LLMAgent(Agent):
         return response.choices[0].message.content
 
 
-if __name__ == "__main__":
+def main():
     # walk throught the sample adding process:
     proposal_id = input("What is the your proposal id? ")
 
@@ -214,3 +214,7 @@ if __name__ == "__main__":
 
     print(f"Sample adding process completed for proposal ID {proposal_id}, file saved as {filename}.")
     show_samples(filename)
+
+
+if __name__ == "__main__":
+    main()
