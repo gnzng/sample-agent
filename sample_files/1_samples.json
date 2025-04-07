@@ -1,0 +1,13 @@
+{
+    "5nE": {
+        "Sample name": "s",
+        "Substrate": "membrane",
+        "Geometry": "transmission",
+        "Puck": "",
+        "Detectors": [],
+        "Energy (eV)": [],
+        "Temperature (K)": [],
+        "Magnetic Field": false,
+        "user_sample_input": "s"
+    }
+}
