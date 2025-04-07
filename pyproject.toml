@@ -11,6 +11,7 @@ python = "^3.8"
 pydantic-ai = "^0.0.52"
 openai = "^1.70.0"
 prettytable = "^3.0.0"
+fastapi = "^0.115.12"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
