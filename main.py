@@ -88,7 +88,7 @@ class Request(BaseModel):
             - only use one string for the puck, e.g. "reflection" or "transmission" or "holo"
             - the detectors are always a list of strings, e.g. ["MTE3", "Andor"]
             - the energy is always a list of floats, e.g. [10.0, 20.0] and in electron volts, make sure you convert keV to eV
-            - the temperature is always a list of floats, e.g. [10.0, 20.0]
+            - the temperature is always a list of floats, e.g. [10.0, 20.0], make sure it gets converted to Kelvin
             - if geometry is not specified, set it to an empty string
             - if the puck is not specified, set it to an empty string
             - if the detectors are not specified, set it to an empty list

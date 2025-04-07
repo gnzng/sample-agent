@@ -14,6 +14,7 @@ from typing import List
         "text_examples/sample4.txt",
         "text_examples/sample5.txt",
         "text_examples/sample6.txt",
+        "text_examples/sample7.txt",
     ],
 )
 def test_templater_response(sample_input):
@@ -64,6 +65,7 @@ def test_templater_response(sample_input):
         assert all(10 < value < 10000 for value in energy_values), "All Energy (eV) values should be between 10 and 10000"
     if len(temperature_values) > 0:
         assert all(isinstance(value, (int, float)) for value in temperature_values), "Temperature values should be numbers"
+        assert all(0 < value < 1000 for value in temperature_values), "All Temperature (K) values should be between 0 and 10000"
 
     # Check the detectors list, should only include MTE3 or/and Andor
     detectors = response_json["Detectors"]
