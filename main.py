@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 from pydantic_ai import Agent
 import openai
@@ -9,6 +9,8 @@ import os
 from prettytable import PrettyTable
 
 load_dotenv()
+
+cborg_api_key = os.getenv("CBORG_API_KEY")
 
 
 def load_sample_template():
@@ -58,7 +60,7 @@ def show_samples(filename):
 
 class Settings(BaseSettings):
     """Configuration settings for the AI workflow"""
-    cborg_api_key: str = Field(..., env="CBORG_API_KEY")
+    cborg_api_key: str = cborg_api_key
     base_url: str = "https://api.cborg.lbl.gov"
     model: str = "openai/gpt-4o-mini"
 
@@ -72,19 +74,28 @@ class Request(BaseModel):
         """Create a Request object with the given sample input"""
         template = json.dumps(load_sample_template())
         prompt = (
-            f"""The template is: {template}. Use the following user input to fill out the template. The user input is: {sample_input}. If you don't know the answer for a specific field, leave it an empty list and do not add any extra text. ONLY return the filled template in JSON format.
+            f"""
+            You are an agent working on a synchrotron scattering beam line, which mostly measures condensed matter samples. We gater information about a new measurement by user input. The template is: {template}.  If you don't know the answer for a specific field, leave it an empty list and do not add any extra text. ONLY return the filled template in JSON format.
 
             Consider the following things:
             - when no magnetic field is applied the field should be set to false. for any other value, it should be set to true.
-            - if multiple answers fit the same field combine them in a list.
             - only reply in raw text, do not add any extra text.
             - Magnetic Field should not be a list, but a boolean value.
-            - if the puck is not specified, use the geometry as a puck entry
-            - if an angle is mentioned it is probably a reflection geometry experiment
-            - if room temperature is mentioned, set the temperature to 300K
-            - if the sample name is not specified, use the substrate as a sample name
+            - if room temperature or 'rt' is mentioned, set the temperature to 300K
             - if no magnetic field is specified, set the field to false
-            - the substrate can also be a membrane
+            - the substrate can also be a membrane, use your physics knowledge to correctly identify the substrate and sample name. look out for dividing keywords like 'on' or 'in' or 'with' or 'of'
+            - only use one string for the geometry, e.g. "transmission" or "reflection"
+            - only use one string for the puck, e.g. "reflection" or "transmission" or "holo"
+            - the detectors are always a list of strings, e.g. ["MTE3", "Andor"]
+            - the energy is always a list of floats, e.g. [10.0, 20.0] and in electron volts, make sure you convert keV to eV
+            - the temperature is always a list of floats, e.g. [10.0, 20.0]
+            - if geometry is not specified, set it to an empty string
+            - if the puck is not specified, set it to an empty string
+            - if the detectors are not specified, set it to an empty list
+            - if the energy is not specified, set it to an empty list
+            - if the temperature is not specified, set it to an empty list
+
+            Use the following user input to fill out the template. The user input is: {sample_input}.
             """
         )
         return cls(prompt=prompt)

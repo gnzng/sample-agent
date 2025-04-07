@@ -1,6 +1,6 @@
 {
     "Sample name": "",
-    "Substrate": [],
+    "Substrate": "",
     "Geometry": ["reflection", "transmission"],
     "Puck": ["transmission", "reflection", "holo"],
     "Detectors": ["MTE3", "Andor"],

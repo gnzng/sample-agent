@@ -1,0 +1,1 @@
+Polymer on 4x4mm SiN membrane, transmission on andor and mte3. room temp and 40K. no magnetic field. 710eV and 0.8keV.
