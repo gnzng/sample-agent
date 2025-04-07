@@ -165,7 +165,7 @@ def get_proposal_id() -> str:
 
 def initialize_sample_file(proposal_id: str) -> str:
     """Initialize or validate the sample JSON file."""
-    filename = f"{proposal_id}_samples.json"
+    filename = f"sample_files/{proposal_id}_samples.json"
     file_path = Path(filename)
 
     if not file_path.exists():
