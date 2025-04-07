@@ -256,10 +256,13 @@ def main():
     while confirm_action("\nWould you like to add a new sample?", default=True):
         add_sample(filename)
 
-    print("")
-    print("\nFinal sample summary:")
-    show_samples(filename)
-    print(f"\nProcess completed for proposal {proposal_id}. File saved as {filename}")
+    try:
+        print("")
+        print("\nFinal sample summary:")
+        show_samples(filename)
+        print(f"\nProcess completed for proposal {proposal_id}. File saved as {filename}")
+    except Exception:
+        print("Error displaying final samples or empty sample file.")
 
 
 if __name__ == "__main__":
