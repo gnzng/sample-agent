@@ -21,7 +21,6 @@ def load_sample_template():
 
 def get_random_sample_hash():
     """Generate a 6-character random sample hash using Base58 encoding without external libraries"""
-
     # Base58 alphabet
     base58_alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
     # Generate 4 random bytes
@@ -100,7 +99,7 @@ class OpenAIConfig:
         )
 
 
-class TimeAgent(Agent):
+class LLMAgent(Agent):
     """Pydantic AI agent for getting the current time"""
     settings: Settings
     config: OpenAIConfig
@@ -110,7 +109,7 @@ class TimeAgent(Agent):
         self.settings = settings
 
     def setup(self):
-        """Initialize the OpenAI client"""
+        """Initialize the OpenAI client access Cborg API"""
         self.config = OpenAIConfig(self.settings)
 
     def run(self, request: Request):
@@ -130,10 +129,10 @@ if __name__ == "__main__":
     proposal_id = input("What is the your proposal id? ")
 
     # Verify the proposal ID input
-    print(f"You entered proposal ID: {proposal_id}. Is this correct? (y/yes to confirm)")
+    print(f"You entered proposal ID: {proposal_id}. Is this correct? ([y]es to confirm)")
     confirmation = input().strip().lower()
     if confirmation not in ["y", "yes"]:
-        print("Error: Proposal ID confirmation failed. Exiting.")
+        print("Error: Proposal ID confirmation failed. Exiting. Start process again, with a valid proposal ID.")
         exit(1)
     print(f"Starting the sample adding process for: {proposal_id}...")
     # Create an empty JSON file with the proposal_id as part of the filename
@@ -152,7 +151,7 @@ if __name__ == "__main__":
 
     adding_samples = True
     while adding_samples:
-        print("Do you want to add a sample? (y/yes to add, n/no to finish)")
+        print("Do you want to add a sample? ([y]es to add, [n]o to finish)")
         confirmation = input().strip().lower()
         if confirmation in ["y", "yes"]:
             sample_id = get_random_sample_hash()
@@ -173,7 +172,7 @@ if __name__ == "__main__":
             request = Request(prompt=request.prompt)
             # Initialize settings and agent
             settings = Settings()
-            agent = TimeAgent(settings)
+            agent = LLMAgent(settings)
             agent.setup()
             # Run the agent with the request
             response = agent.run(request)
