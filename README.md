@@ -17,9 +17,17 @@ Example:
 === Sample Management System Agent ===
 ========= for BLXXX =================
 ======================================
-Please enter your proposal ID (or type 'exit' to quit): 123
-You entered proposal ID: 123. Is this correct? [y/N]: y
-Please enter the token for proposal ID 123 (or type 'exit' to quit): 123
+Please enter your proposal ID (or type 'exit' to quit):
+123
+
+You entered proposal ID: 123. Is this correct? [y/N]:
+
+y
+
+Please enter the token for proposal ID 123 (or type 'exit' to quit):
+
+123
+
 Token validated successfully.
 Using existing sample file: sample_files/123_samples.json
 Current sample setup for sample_files/123_samples.json:
@@ -30,7 +38,9 @@ Current sample setup for sample_files/123_samples.json:
 |    5hP    | SmCo5 thin film |   Al2O3   |  reflection  |      |  ['MTE3'] | [1000.0, 1200.0] |     [300.0]     |      True      |
 +-----------+-----------------+-----------+--------------+------+-----------+------------------+-----------------+----------------+
 
-Would you like to add a new sample? [Y/n]: y
+Would you like to add a new sample? [Y/n]:
+
+y
 
 Adding sample with ID: 2jj
 Please enter sample details with the following information:
@@ -42,10 +52,14 @@ Please enter sample details with the following information:
 - Camera/detector (MTE3/Andor)
 - Measurement temperature (K)
 - Magnetic field requirement
-Enter all details separated by commas: 10nm Permalloy on SiN membrane, transmission on andor. room temp. no magnetic field. 710eV.
+Enter all details separated by commas:
+
+10nm Permalloy on SiN membrane, transmission on andor. room temp. no magnetic field. 710eV.
 Successfully added sample 2jj to sample_files/123_samples.json
 
-Would you like to add a new sample? [Y/n]: n
+Would you like to add a new sample? [Y/n]:
+
+n
 
 
 Final sample summary:
